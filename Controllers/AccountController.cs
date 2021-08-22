@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using auth_service.Models;
+using auth_service.Services.DbClient;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace auth_service.Controllers
 {
@@ -10,8 +13,10 @@ namespace auth_service.Controllers
     [Route("[controller]")]
     public class AccountController : ControllerBase
     {
-        public AccountController()
+        private readonly IMongoCollection<Account> _accounts;
+        public AccountController(IDbClient dbClient)
         {
+            _accounts = dbClient.GetAccountCollection();
         }
     }
 }
