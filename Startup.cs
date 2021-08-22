@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using auth_service.Config;
+using auth_service.Services.AccountService;
 using auth_service.Services.DbClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace auth_service
         {
             services.AddSingleton<IDbClient, DbClient>();
             services.Configure<AuthDbConfig>(Configuration);
+            services.AddTransient<IAccountService, AccountService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
