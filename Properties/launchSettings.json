@@ -27,7 +27,7 @@
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_NAME": "mongodb-chatbuds-auth-csharp",
+        "DATABASE_NAME": "authDb",
         "ACCOUNT_COLLECTION_NAME": "accounts"
       }
     }

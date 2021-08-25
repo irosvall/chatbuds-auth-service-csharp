@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using auth_service.Config;
+using auth_service.Models;
 using auth_service.Services.AccountService;
 using auth_service.Services.DbClient;
+using auth_service.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,6 +35,7 @@ namespace auth_service
             services.AddSingleton<IDbClient, DbClient>();
             services.Configure<AuthDbConfig>(Configuration);
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IValidator<Account>, AccountValidator>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
