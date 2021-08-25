@@ -11,7 +11,7 @@ namespace auth_service.Services.AccountService
         Account AuthenticateAccount(string email, string password);
         
         /// <summary>
-        /// Creates a new account.
+        /// Creates a new account and hashes the password.
         /// </summary>
         /// <exception cref="ValidationException">
         /// Throws when the validation of the account fails.

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using auth_service.Models;
 using auth_service.Services.DbClient;
 using FluentValidation;
-using FluentValidation.Results;
 using MongoDB.Driver;
 
 namespace auth_service.Services.AccountService
@@ -27,6 +26,7 @@ namespace auth_service.Services.AccountService
         public Account CreateAccount(Account account)
         {
             ValidateAccount(account);
+            account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
             _accounts.InsertOneAsync(account).Wait(); 
             return account;
         }
