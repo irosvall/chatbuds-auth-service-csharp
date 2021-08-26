@@ -13,16 +13,26 @@ namespace auth_service.Services.AccountService
 		private readonly IMongoCollection<Account> _accounts;
 		private readonly IValidator<Account> _validator;
 
-        public AccountService(IDbClient dbClient, IValidator<Account> validator)
-        {
-            _accounts = dbClient.GetAccountCollection();
-            _validator = validator;
-        }
-        
-        public Account AuthenticateAccount(string email, string password)
-        {
-            throw new System.NotImplementedException();
-        }
+		public AccountService(IDbClient dbClient, IValidator<Account> validator)
+		{
+			this._accounts = dbClient.GetAccountCollection();
+			this._validator = validator;
+		}
+
+		public async Task<Account> AuthenticateAccount(string email, string password)
+		{
+			var account = await this._accounts
+				.Find(x => x.Email == email)
+				.FirstAsync();
+
+			// If no account is found or password is wrong, throw an error.
+			if (account == null || !(BCrypt.Net.BCrypt.Verify(password, account.Password)))
+			{
+				throw new AuthenticationException();
+			}
+
+			return account;
+		}
 
 		public async Task<Account> RegisterAccount(Account account)
 		{
