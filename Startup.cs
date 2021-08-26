@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using auth_service.Config;
 using auth_service.Models;
 using auth_service.Services.AccountService;
@@ -10,12 +7,9 @@ using auth_service.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace auth_service
@@ -24,7 +18,7 @@ namespace auth_service
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -33,7 +27,7 @@ namespace auth_service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDbClient, DbClient>();
-            services.Configure<AuthDbConfig>(Configuration);
+            services.Configure<AuthDbConfig>(this.Configuration);
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IValidator<Account>, AccountValidator>();
             services.AddControllers();
