@@ -13,17 +13,28 @@ namespace auth_service.Services.JwtService
 	public class JwtService : IJwtService
 	{
 		private readonly IOptions<JwtConfig> _jwtConfig;
+        private readonly IJwtEncoder _encoder;
+        private readonly IJwtDecoder _decoder;
 
 		public JwtService(IOptions<JwtConfig> jwtConfig)
 		{
 			this._jwtConfig = jwtConfig;
+
+			var privateKey = this.GetRsaKey(this._jwtConfig.Value.Private_Key_Filepath);
+			var publicKey = this.GetRsaKey(this._jwtConfig.Value.Public_Key_Filepath);
+
+			var algorithm = new RS256Algorithm(publicKey, privateKey);
+			var serializer = new JsonNetSerializer();
+			var urlEncoder = new JwtBase64UrlEncoder();
+			var provider = new UtcDateTimeProvider();
+			var validator = new JwtValidator(serializer, provider);
+
+			this._encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
+			this._decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 		}
 
 		public string CreateJwt(string accountId, string accountUsername)
 		{
-			var privateKey = this.GetRsaKey(this._jwtConfig.Value.Private_Key_Filepath);
-			var publicKey = this.GetRsaKey(this._jwtConfig.Value.Public_Key_Filepath);
-
 			var payload = new
 			{
 				sub = accountId,
@@ -31,12 +42,7 @@ namespace auth_service.Services.JwtService
 				exp = int.Parse(this._jwtConfig.Value.Token_Expire_Time)
 			};
 
-			IJwtAlgorithm algorithm = new RS256Algorithm(publicKey, privateKey);
-			IJsonSerializer serializer = new JsonNetSerializer();
-			IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-			IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-
-			var jwt = encoder
+			var jwt = this._encoder
 				.Encode(payload, this.GetFileText(this._jwtConfig.Value.Private_Key_Filepath));
 
 			return jwt;
