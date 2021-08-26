@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Authentication;
+using System.Threading.Tasks;
 using auth_service.Models;
 using FluentValidation;
 
@@ -9,6 +10,9 @@ namespace auth_service.Services.AccountService
 		/// <summary>
 		/// Authenticates the account.
 		/// </summary>
+		/// <exception cref="AuthenticationException">
+		/// Throws if no account is found or password is wrong.
+		/// </exception>
 		Task<Account> AuthenticateAccount(string email, string password);
 
 		/// <summary>
