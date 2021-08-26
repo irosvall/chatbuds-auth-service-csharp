@@ -3,6 +3,7 @@ using auth_service.Config;
 using auth_service.Models;
 using auth_service.Services.AccountService;
 using auth_service.Services.DbClient;
+using auth_service.Services.JwtService;
 using auth_service.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -26,8 +27,10 @@ namespace auth_service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDbClient, DbClient>();
             services.Configure<AuthDbConfig>(this.Configuration);
+            services.Configure<JwtConfig>(this.Configuration);
+            services.AddSingleton<IDbClient, DbClient>();
+            services.AddSingleton<IJwtService, JwtService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IValidator<Account>, AccountValidator>();
             services.AddControllers();
