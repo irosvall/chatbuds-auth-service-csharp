@@ -5,13 +5,13 @@
 	/// </summary>
 	public class AuthDbConfig
 	{
-		// The database name is set automatically from the launchSettings.
+		// Automatically set from the launchSettings.
 		public string Database_Name { get; set; }
 
-		// The account collection name is set automatically from the launchSettings.
+		// Automatically set from the launchSettings.
 		public string Account_Collection_Name { get; set; }
 
-		// The database connection string is set automatically from the user-secrets.
+		// Automatically set from the user-secrets.
 		public string Db_Connection_String { get; set; }
 	}
 }

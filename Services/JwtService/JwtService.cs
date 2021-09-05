@@ -42,26 +42,23 @@ namespace auth_service.Services.JwtService
 			{
 				sub = accountId,
 				name = accountUsername,
-				exp = DateTimeOffset.Now.ToUnixTimeSeconds() + long.Parse(this._jwtConfig.Value.Token_Expire_Time)
+				exp = this.GetJwtPayloadExpireTime()
 			};
 
+			var privateKey = this.GetFileText(this._jwtConfig.Value.Private_Key_Filepath);
 			var jwt = this._encoder
-				.Encode(payload, this.GetFileText(this._jwtConfig.Value.Private_Key_Filepath));
+				.Encode(payload, privateKey);
 
 			return jwt;
 		}
 
 		public Account AuthenticateJwt(IHeaderDictionary headers)
 		{
-			var authorization = headers["Authorization"][0]?.Split(" ");
-
-			if (authorization?[0] != "Bearer")
-			{
-				throw new AuthenticationException();
-			}
+			var token = this.GetBearerAuthorizationToken(headers);
+			var publicKey = this.GetFileText(this._jwtConfig.Value.Public_Key_Filepath);
 
 			var jwtPayloadJson = this._decoder
-				.Decode(authorization[1], this.GetFileText(this._jwtConfig.Value.Public_Key_Filepath), true);
+				.Decode(token, publicKey, true);
 
 			var jwtPayload = JsonSerializer.Deserialize<JwtPayload>(jwtPayloadJson);
 
@@ -83,6 +80,26 @@ namespace auth_service.Services.JwtService
 		private string GetFileText(string filePath)
 		{
 			return File.ReadAllText(filePath);
+		}
+
+		private long GetJwtPayloadExpireTime()
+		{
+			return DateTimeOffset.Now.ToUnixTimeSeconds() + long.Parse(this._jwtConfig.Value.Jwt_Expire_Time);
+		}
+
+		/// <exception cref="AuthenticationException">
+		/// Thrown if bearer token is missing from the header.
+		/// </exception>
+		private string GetBearerAuthorizationToken(IHeaderDictionary headers)
+		{
+			var authorization = headers["Authorization"][0]?.Split(" ");
+
+			if (authorization?[0] != "Bearer")
+			{
+				throw new AuthenticationException();
+			}
+
+			return authorization[1];
 		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using auth_service.Models;
@@ -37,41 +36,49 @@ namespace auth_service.Services.AccountService
 
 		public async Task<Account> RegisterAccount(Account account)
 		{
-			// Trims away white spaces from username and email.
-			account.Email = account.Email.Trim();
-			account.Username = account.Username.Trim();
+			this.TrimAccountNameAndEmail(account);
 
 			await this.ValidateAccount(account);
+			account.Password = this.CreateHashedPassword(account.Password);
 
-			// Hashes the password after successful validation.
-			account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
-
-			// Adds the account to the database.
-			await this._accounts.InsertOneAsync(account);
+			await this.AddAccountToDatabase(account);
 
 			return account;
 		}
 
 		public async Task DeleteAccount(Account account)
 		{
-			var response = await this._accounts
+			var deleteResult = await this._accounts
 				.DeleteOneAsync(x => x.Id == account.Id);
 
-			if (response.DeletedCount == 0)
+			if (deleteResult.DeletedCount == 0)
 			{
 				throw new DataException();
 			}
 		}
 
-		/// <summary>
-		/// Validates the Account.
-		/// </summary>
 		/// <exception cref="ValidationException">
 		/// Throws when the validation of the account fails.
 		/// </exception>
 		private async Task ValidateAccount(Account account)
 		{
 			await this._validator.ValidateAndThrowAsync(account);
+		}
+
+		private void TrimAccountNameAndEmail(Account account)
+		{
+			account.Email = account.Email.Trim();
+			account.Username = account.Username.Trim();
+		}
+
+		private string CreateHashedPassword(string password)
+		{
+			return BCrypt.Net.BCrypt.HashPassword(password);
+		}
+
+		private async Task AddAccountToDatabase(Account account)
+		{
+			await this._accounts.InsertOneAsync(account);
 		}
 	}
 }

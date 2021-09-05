@@ -25,21 +25,21 @@ namespace auth_service.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<IActionResult> Login(string email, string password)
+		public async Task<IActionResult> Login(AccountLogin account)
 		{
 			try
 			{
-				var account = await this._accountService.AuthenticateAccount(email, password);
+				var authenticatedAccount = await this._accountService.AuthenticateAccount(account.Email, account.Password);
 
 				return this.Ok(new
 				{
 					user = new
 					{
-						account.Id,
-						account.Email,
-						account.Username
+						authenticatedAccount.Id,
+						authenticatedAccount.Email,
+						authenticatedAccount.Username
 					},
-					access_token = this._jwtService.CreateJwt(account.Id, account.Username)
+					access_token = this._jwtService.CreateJwt(authenticatedAccount.Id, authenticatedAccount.Username)
 				});
 			}
 			catch (AuthenticationException)

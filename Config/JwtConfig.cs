@@ -5,13 +5,13 @@
 	/// </summary>
 	public class JwtConfig
 	{
-		// Automatically from the user-secrets.
+		// Automatically set from the user-secrets.
 		public string Private_Key_Filepath { get; set; }
 
-		// Automatically from the user-secrets.
+		// Automatically set from the user-secrets.
 		public string Public_Key_Filepath { get; set; }
 
-		// Automatically from the user-secrets.
-		public string Token_Expire_Time { get; set; }
+		// Automatically set from the user-secrets.
+		public string Jwt_Expire_Time { get; set; }
 	}
 }

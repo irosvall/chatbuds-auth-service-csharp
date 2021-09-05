@@ -19,11 +19,16 @@ namespace auth_service.Validators
 		{
 			this._accounts = dbClient.GetAccountCollection();
 
+			this.SetupValidationRules();
+		}
+
+		private void SetupValidationRules()
+		{
 			this.RuleFor(account => account.Email)
 				.Cascade(CascadeMode.Stop)
 				.Must(this.IsValidEmail)
 				.WithMessage("The email is not a valid email address.")
-				.MustAsync(async (email, _) => await this.IsUnique("email", email))
+				.MustAsync(async (email, _) => await this.IsUniqueFieldInDatabase("email", email))
 				.WithMessage("The email is already in use.");
 
 			this.RuleFor(account => account.Username)
@@ -32,7 +37,7 @@ namespace auth_service.Validators
 				.WithMessage("The username must be between 2-24 characters.")
 				.Must(this.IsAlphanumeric)
 				.WithMessage("The username is only allowed to contain numbers and letters (a-z).")
-				.MustAsync(async (username, _) => await this.IsUnique("username", username))
+				.MustAsync(async (username, _) => await this.IsUniqueFieldInDatabase("username", username))
 				.WithMessage("The username is already in use.");
 
 			this.RuleFor(account => account.Password)
@@ -51,10 +56,7 @@ namespace auth_service.Validators
 			return EmailValidator.Validate(email);
 		}
 
-		/// <summary>
-		/// Ensures that the value of the field is not already in use in the database.
-		/// </summary>
-		private async Task<bool> IsUnique(string fieldName, string value)
+		private async Task<bool> IsUniqueFieldInDatabase(string fieldName, string value)
 		{
 			var result = await this._accounts
 				.Find(Builders<Account>.Filter.Eq(fieldName, value))
