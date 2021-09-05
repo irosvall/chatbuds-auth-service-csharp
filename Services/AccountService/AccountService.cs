@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using auth_service.Models;
@@ -23,7 +24,7 @@ namespace auth_service.Services.AccountService
 		{
 			var account = await this._accounts
 				.Find(x => x.Email == email)
-				.FirstAsync();
+				.FirstOrDefaultAsync();
 
 			// If no account is found or password is wrong, throw an error.
 			if (account == null || !(BCrypt.Net.BCrypt.Verify(password, account.Password)))
@@ -51,9 +52,15 @@ namespace auth_service.Services.AccountService
 			return account;
 		}
 
-		public void DeleteAccount(Account account)
+		public async Task DeleteAccount(Account account)
 		{
-			throw new NotImplementedException();
+			var response = await this._accounts
+				.DeleteOneAsync(x => x.Id == account.Id);
+
+			if (response.DeletedCount == 0)
+			{
+				throw new DataException();
+			}
 		}
 
 		/// <summary>

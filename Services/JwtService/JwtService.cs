@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Security.Authentication;
 using System.Security.Cryptography;
+using System.Text.Json;
 using auth_service.Config;
 using auth_service.Models;
 using JWT;
@@ -35,11 +38,11 @@ namespace auth_service.Services.JwtService
 
 		public string CreateJwt(string accountId, string accountUsername)
 		{
-			var payload = new
+			var payload = new JwtPayload
 			{
 				sub = accountId,
 				name = accountUsername,
-				exp = int.Parse(this._jwtConfig.Value.Token_Expire_Time)
+				exp = DateTimeOffset.Now.ToUnixTimeSeconds() + long.Parse(this._jwtConfig.Value.Token_Expire_Time)
 			};
 
 			var jwt = this._encoder
@@ -50,7 +53,23 @@ namespace auth_service.Services.JwtService
 
 		public Account AuthenticateJwt(IHeaderDictionary headers)
 		{
-			throw new System.NotImplementedException();
+			var authorization = headers["Authorization"][0]?.Split(" ");
+
+			if (authorization?[0] != "Bearer")
+			{
+				throw new AuthenticationException();
+			}
+
+			var jwtPayloadJson = this._decoder
+				.Decode(authorization[1], this.GetFileText(this._jwtConfig.Value.Public_Key_Filepath), true);
+
+			var jwtPayload = JsonSerializer.Deserialize<JwtPayload>(jwtPayloadJson);
+
+			return new Account
+			{
+				Id = jwtPayload?.sub,
+				Username = jwtPayload?.name
+			};
 		}
 
 		private RSA GetRsaKey(string filePath)

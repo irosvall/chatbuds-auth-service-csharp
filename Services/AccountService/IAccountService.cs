@@ -1,4 +1,5 @@
-﻿using System.Security.Authentication;
+﻿using System.Data;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using auth_service.Models;
 using FluentValidation;
@@ -26,6 +27,9 @@ namespace auth_service.Services.AccountService
 		/// <summary>
 		/// Deletes the account.
 		/// </summary>
-		void DeleteAccount(Account account);
+		/// <exception cref="DataException">
+		/// Throws when no account was found to be deleted.
+		/// </exception>
+		Task DeleteAccount(Account account);
 	}
 }

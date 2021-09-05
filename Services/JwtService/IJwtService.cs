@@ -1,4 +1,6 @@
-﻿using auth_service.Models;
+﻿using System.Security.Authentication;
+using auth_service.Models;
+using JWT.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace auth_service.Services.JwtService
@@ -13,6 +15,15 @@ namespace auth_service.Services.JwtService
 		/// <summary>
 		/// Authenticates the http request by validating its JWT.
 		/// </summary>
+		/// <exception cref="AuthenticationException">
+        /// Thrown if bearer token is missing from the header.
+        /// </exception>
+        /// <exception cref="TokenExpiredException">
+        /// Thrown if the token has expired.
+        /// </exception>
+        /// <exception cref="SignatureVerificationException">
+		/// Thrown if the token has an invalid signature.
+		/// </exception>
 		Account AuthenticateJwt(IHeaderDictionary headers);
 	}
 }
