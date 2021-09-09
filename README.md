@@ -29,10 +29,10 @@ The original Auth Service: https://github.com/irosvall/chatbuds-auth-service
 ## Starting up this project locally
 To run the Authentication Service locally you will need to add environment variables to the user-secrets.
 
-PUBLIC_KEY_FILEPATH = the file path to private RS256 key used for JWT encoding
-PRIVATE_KEY_FILEPATH = the file path to public RS256 key used for JWT encoding/decoding
-JWT_EXPIRE_TIME = Specifies the expiration date for the JWT in seconds from it was made.
-DB_CONNECTION_STRING = The database connection string
+- PUBLIC_KEY_FILEPATH = the file path to private RS256 key used for JWT encoding
+- PRIVATE_KEY_FILEPATH = the file path to public RS256 key used for JWT encoding/decoding
+- JWT_EXPIRE_TIME = Specifies the expiration date for the JWT in seconds from it was made.
+- DB_CONNECTION_STRING = The database connection string
 
 ### How to add environment variables
 
