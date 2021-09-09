@@ -16,11 +16,11 @@ The documentation of which http requests are possible to make is found at: https
 ## System overview
 ChatBuds is built as a small microservice-architecture. The consumer/client only communicates with the API Gateway which handles the back-end communication.
 
-The client: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/chatbuds
+The client: https://github.com/irosvall/chatbuds-client
 
-The API Gateway: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/api-gateway
+The API Gateway: https://github.com/irosvall/chatbuds-api-gateway
 
-The Resource Service: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/resource-service
+The Resource Service: https://github.com/irosvall/chatbuds-resource-service
 
 The original Auth Service: https://github.com/irosvall/chatbuds-auth-service
 
