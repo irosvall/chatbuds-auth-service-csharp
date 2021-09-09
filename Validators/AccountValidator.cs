@@ -17,6 +17,7 @@ namespace auth_service.Validators
 
 		public AccountValidator(IDbClient dbClient)
 		{
+			this.CascadeMode = CascadeMode.Stop;
 			this._accounts = dbClient.GetAccountCollection();
 
 			this.SetupValidationRules();
@@ -25,20 +26,20 @@ namespace auth_service.Validators
 		private void SetupValidationRules()
 		{
 			this.RuleFor(account => account.Email)
-				.Cascade(CascadeMode.Stop)
 				.Must(this.IsValidEmail)
 				.WithMessage("The email is not a valid email address.")
 				.MustAsync(async (email, _) => await this.IsUniqueFieldInDatabase("email", email))
-				.WithMessage("The email is already in use.");
+				.WithMessage("The email is already in use.")
+				.WithErrorCode("DuplicationError");
 
 			this.RuleFor(account => account.Username)
-				.Cascade(CascadeMode.Stop)
 				.Length(2, 24)
 				.WithMessage("The username must be between 2-24 characters.")
 				.Must(this.IsAlphanumeric)
 				.WithMessage("The username is only allowed to contain numbers and letters (a-z).")
 				.MustAsync(async (username, _) => await this.IsUniqueFieldInDatabase("username", username))
-				.WithMessage("The username is already in use.");
+				.WithMessage("The username is already in use.")
+				.WithErrorCode("DuplicationError");
 
 			this.RuleFor(account => account.Password)
 				.Length(10, 1000)

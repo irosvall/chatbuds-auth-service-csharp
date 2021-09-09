@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using auth_service.Models;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace auth_service.Controllers
 {
 	[ApiController]
-	[Route("account")]
+	[Route("api/v1")]
 	public class AccountController : ControllerBase
 	{
 		private readonly IAccountService _accountService;
@@ -29,7 +30,8 @@ namespace auth_service.Controllers
 		{
 			try
 			{
-				var authenticatedAccount = await this._accountService.AuthenticateAccount(account.Email, account.Password);
+				var authenticatedAccount =
+					await this._accountService.AuthenticateAccount(account.Email, account.Password);
 
 				return this.Ok(new
 				{
@@ -67,7 +69,14 @@ namespace auth_service.Controllers
 			}
 			catch (ValidationException e)
 			{
-				return this.BadRequest(e.Errors);
+				var firstError = e.Errors.First();
+
+				if (firstError.ErrorCode != "DuplicationError")
+				{
+					return this.BadRequest(firstError);
+				}
+
+				return this.Conflict(firstError);
 			}
 			catch (Exception)
 			{
@@ -105,3 +114,4 @@ namespace auth_service.Controllers
 		}
 	}
 }
+
