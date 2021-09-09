@@ -1,6 +1,8 @@
 # Authentication Service
 
-This is a .NET C# translation of the microservice that handles authentication for the ChatBuds application.
+This is a C# translation of the microservice that handles authentication for the ChatBuds application.
+
+Made in ASP.NET Core 5.0.
 
 The original can be found here: https://github.com/irosvall/chatbuds-auth-service
 
