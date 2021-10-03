@@ -25,8 +25,7 @@ namespace auth_service.Services.AccountService
 				.Find(x => x.Email == email)
 				.FirstOrDefaultAsync();
 
-			// If no account is found or password is wrong, throw an error.
-			if (account == null || !(BCrypt.Net.BCrypt.Verify(password, account.Password)))
+			if (account == null || this.IsWrongPassword(password, account.Password))
 			{
 				throw new AuthenticationException();
 			}
@@ -37,10 +36,9 @@ namespace auth_service.Services.AccountService
 		public async Task<Account> RegisterAccount(Account account)
 		{
 			this.TrimAccountNameAndEmail(account);
-
 			await this.ValidateAccount(account);
-			account.Password = this.CreateHashedPassword(account.Password);
 
+			account.Password = this.CreateHashedPassword(account.Password);
 			await this.AddAccountToDatabase(account);
 
 			return account;
@@ -63,6 +61,11 @@ namespace auth_service.Services.AccountService
 		private async Task ValidateAccount(Account account)
 		{
 			await this._validator.ValidateAndThrowAsync(account);
+		}
+
+		private bool IsWrongPassword(string inputPassword, string correctPassword)
+		{
+			return !BCrypt.Net.BCrypt.Verify(inputPassword, correctPassword);
 		}
 
 		private void TrimAccountNameAndEmail(Account account)

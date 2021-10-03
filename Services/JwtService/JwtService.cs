@@ -16,8 +16,8 @@ namespace auth_service.Services.JwtService
 	public class JwtService : IJwtService
 	{
 		private readonly IOptions<JwtConfig> _jwtConfig;
-        private readonly IJwtEncoder _encoder;
-        private readonly IJwtDecoder _decoder;
+		private readonly IJwtEncoder _encoder;
+		private readonly IJwtDecoder _decoder;
 
 		public JwtService(IOptions<JwtConfig> jwtConfig)
 		{
@@ -38,14 +38,9 @@ namespace auth_service.Services.JwtService
 
 		public string CreateJwt(string accountId, string accountUsername)
 		{
-			var payload = new JwtPayload
-			{
-				sub = accountId,
-				name = accountUsername,
-				exp = this.GetJwtPayloadExpireTime()
-			};
-
+			var payload = this.CreateJwtPayload(accountId, accountUsername);
 			var privateKey = this.GetFileText(this._jwtConfig.Value.Private_Key_Filepath);
+
 			var jwt = this._encoder
 				.Encode(payload, privateKey);
 
@@ -100,6 +95,16 @@ namespace auth_service.Services.JwtService
 			}
 
 			return authorization[1];
+		}
+
+		private JwtPayload CreateJwtPayload(string accountId, string accountUsername)
+		{
+			return new()
+			{
+				sub = accountId,
+				name = accountUsername,
+				exp = this.GetJwtPayloadExpireTime()
+			};
 		}
 	}
 }

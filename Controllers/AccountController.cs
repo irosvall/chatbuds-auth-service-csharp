@@ -7,6 +7,7 @@ using auth_service.Models;
 using auth_service.Services.AccountService;
 using auth_service.Services.JwtService;
 using FluentValidation;
+using FluentValidation.Results;
 using JWT.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,12 +36,7 @@ namespace auth_service.Controllers
 
 				return this.Ok(new
 				{
-					user = new
-					{
-						authenticatedAccount.Id,
-						authenticatedAccount.Email,
-						authenticatedAccount.Username
-					},
+					user = this.FilterAccountInformation(authenticatedAccount),
 					access_token = this._jwtService.CreateJwt(authenticatedAccount.Id, authenticatedAccount.Username)
 				});
 			}
@@ -60,23 +56,11 @@ namespace auth_service.Controllers
 			try
 			{
 				await this._accountService.RegisterAccount(account);
-				return this.Created("", new
-				{
-					account.Id,
-					account.Email,
-					account.Username
-				});
+				return this.Created("", this.FilterAccountInformation(account));
 			}
 			catch (ValidationException e)
 			{
-				var firstError = e.Errors.First();
-
-				if (firstError.ErrorCode != "DuplicationError")
-				{
-					return this.BadRequest(firstError);
-				}
-
-				return this.Conflict(new {message = firstError.ErrorMessage});
+				return this.HandleValidationException(e);
 			}
 			catch (Exception)
 			{
@@ -111,6 +95,33 @@ namespace auth_service.Controllers
 
 				return this.StatusCode(500);
 			}
+		}
+
+		private Account FilterAccountInformation(Account account)
+		{
+			return new()
+			{
+				Id = account.Id,
+				Email = account.Email,
+				Username = account.Username
+			};
+		}
+
+		private IActionResult HandleValidationException(ValidationException e)
+		{
+			var validationFailure = e.Errors.First();
+
+			if (this.IsDuplicationValidationError(validationFailure))
+			{
+				return this.Conflict(new {message = validationFailure.ErrorMessage});
+			}
+
+			return this.BadRequest(validationFailure);
+		}
+
+		private bool IsDuplicationValidationError(ValidationFailure validationFailure)
+		{
+			return validationFailure.ErrorCode == "DuplicationError";
 		}
 	}
 }
