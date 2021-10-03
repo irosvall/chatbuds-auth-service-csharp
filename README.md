@@ -1,6 +1,8 @@
 # Authentication Service
 
-This is a .NET C# translation of the microservice that handles authentication for the ChatBuds application.
+This is a C# translation of the microservice that handles authentication for the ChatBuds application.
+
+Made in ASP.NET Core 5.0.
 
 The original can be found here: https://github.com/irosvall/chatbuds-auth-service
 
@@ -10,11 +12,11 @@ The documentation of which http requests are possible to make is found at: https
 ## System overview
 ChatBuds is built as a small microservice-architecture. The consumer/client only communicates with the API Gateway which handles the back-end communication.
 
-The client: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/chatbuds
+The client: https://github.com/irosvall/chatbuds-client
 
-The API Gateway: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/api-gateway
+The API Gateway: https://github.com/irosvall/chatbuds-api-gateway
 
-The Resource Service: https://gitlab.lnu.se/1dv613/student/ir222gn/projects/resource-service
+The Resource Service: https://github.com/irosvall/chatbuds-resource-service
 
 The original Auth Service: https://github.com/irosvall/chatbuds-auth-service
 
@@ -23,10 +25,10 @@ The original Auth Service: https://github.com/irosvall/chatbuds-auth-service
 ## Starting up this project locally
 To run the Authentication Service locally you will need to add environment variables to the user-secrets.
 
-PUBLIC_KEY_FILEPATH = the file path to private RS256 key used for JWT encoding
-PRIVATE_KEY_FILEPATH = the file path to public RS256 key used for JWT encoding/decoding
-JWT_EXPIRE_TIME = Specifies the expiration date for the JWT in seconds from it was made.
-DB_CONNECTION_STRING = The database connection string
+- PUBLIC_KEY_FILEPATH = the file path to private RS256 key used for JWT encoding
+- PRIVATE_KEY_FILEPATH = the file path to public RS256 key used for JWT encoding/decoding
+- JWT_EXPIRE_TIME = Specifies the expiration date for the JWT in seconds from it was made.
+- DB_CONNECTION_STRING = The database connection string
 
 ### How to add environment variables
 
