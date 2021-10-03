@@ -15,7 +15,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_NAME": "authDb",
+        "DATABASE_NAME": "mongodb-chatbuds-auth",
         "ACCOUNTS_COLLECTION_NAME": "accounts"
       }
     },
@@ -24,10 +24,10 @@
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:8083;http://localhost:8082",
+      "applicationUrl": "http://localhost:8082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_NAME": "authDb",
+        "DATABASE_NAME": "mongodb-chatbuds-auth",
         "ACCOUNT_COLLECTION_NAME": "accounts"
       }
     }

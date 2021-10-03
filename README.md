@@ -4,10 +4,6 @@ This is a .NET C# translation of the microservice that handles authentication fo
 
 The original can be found here: https://github.com/irosvall/chatbuds-auth-service
 
-## <span style="color:red">OBS</span>
-This service works fine on its own at the moment, but I have not made it work yet in combination
-with the other ChatBuds API's made in node.js.
-
 ## API documentation
 The documentation of which http requests are possible to make is found at: https://app.swaggerhub.com/apis-docs/chatbuds/auth-service/1.0.0
 

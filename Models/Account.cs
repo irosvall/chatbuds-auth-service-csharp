@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace auth_service.Models
@@ -17,5 +18,11 @@ namespace auth_service.Models
 
 		[BsonElement("password")]
 		public string Password { get; set; }
+
+		[BsonElement("createdAt")]
+		public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+		[BsonElement("updatedAt")]
+		public DateTime UpdatedAt { get; set; } = DateTime.Now;
 	}
 }

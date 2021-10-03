@@ -76,7 +76,7 @@ namespace auth_service.Controllers
 					return this.BadRequest(firstError);
 				}
 
-				return this.Conflict(firstError);
+				return this.Conflict(new {message = firstError.ErrorMessage});
 			}
 			catch (Exception)
 			{
@@ -114,4 +114,3 @@ namespace auth_service.Controllers
 		}
 	}
 }
-
